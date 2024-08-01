@@ -7,49 +7,21 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
-    overflow-y: auto; /* 페이지 전체의 스크롤을 허용 */
 }
 
 .container {
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    border-radius: 10px;
-    text-align: center;
-    overflow-y: auto;
-}
-
-#initialContainer {
     width: 80%;
     max-width: 800px;
-}
-
-.result-container {
-    width: 100%;
-    max-width: 1600px;
-    display: block;
-}
-
-.main-panel {
-    display: flex;
-    width: 100%;
-    justify-content: space-between; /* 좌우 패널을 양 끝에 배치 */
-}
-
-.left-panel, .right-panel {
-    width: 48%;
-    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 40px; /* 패딩을 키워서 전체 크기를 크게 설정 */
+    border-radius: 10px;
+    text-align: center;
+    overflow-y: auto; /* 컨테이너에 스크롤 추가 */
 }
 
 .logo {
     width: 70%;
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-}
-
-.result-logo {
-    width: 35%;
     max-width: 100%;
     height: auto;
     margin-bottom: 20px;
@@ -60,18 +32,18 @@ body {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-    width: 100%;
+    width: 100%; /* search-container의 너비를 100%로 설정 */
 }
 
-#searchInput, #resultSearchInput {
-    width: 90%;
+#searchInput {
+    width: 90%; /* 검색창의 너비를 더 크게 설정 */
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px 0 0 5px;
 }
 
-#searchButton, #resultSearchButton {
+#searchButton {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -81,7 +53,7 @@ body {
     cursor: pointer;
 }
 
-#dropdown, #dropdownResult {
+#dropdown {
     position: absolute;
     top: 40px;
     left: 0;
@@ -114,46 +86,28 @@ body {
     height: auto;
 }
 
-.legend-image {
-    width: 100%;
-    max-width: 600px; /* dom.png와 같은 크기로 설정 */
-    margin-top: 20px;
-}
-
 .no-data {
     text-align: center;
     font-size: 18px;
     color: red;
 }
 
-.uniprot-data, .forweb-data {
-    margin-top: 20px;
-    font-size: 1em;
+.uniprot-data {
+    margin-top: 20px; /* 여백 추가 */
+    font-size: 1.25em; /* 글꼴 크기 1.25배로 키움 */
     color: #333;
 }
 
 .table-container {
-    max-height: 200px;
-    overflow-y: auto;
-    margin-top: 10px;
+    max-height: 200px; /* 높이를 지정 */
+    overflow-y: auto; /* 세로 스크롤 추가 */
+    margin-top: 10px; /* 여백 추가 */
 }
 
-.uniprot-table {
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-}
-
-.forweb-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    table-layout: fixed; /* 고정된 테이블 레이아웃 */
-    word-wrap: break-word; /* 단어가 길 경우 줄바꿈 */
-}
-
-.forweb-data .table-container {
-    max-height: 700px; /* 원하는 최대 높이로 설정 */
 }
 
 th, td {

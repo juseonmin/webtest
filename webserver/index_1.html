@@ -16,19 +16,8 @@
         </div>
     </div>
     <div id="resultContainer" class="container result-container" style="display: none;">
-        <img src="web/logo.png" alt="Experiment Data Search Logo" class="result-logo">
-        <div class="search-container">
-            <input type="text" id="resultSearchInput" placeholder="Enter gene name to search data...">
-            <button id="resultSearchButton">🔍</button>
-            <div id="dropdownResult" class="dropdown-content"></div>
-        </div>
-        <div class="main-panel">
-            <div class="left-panel" id="dataContainer"></div>
-            <div class="right-panel">
-                <h2>Experimental RNA-binding evidence</h2>
-                <div id="forwebDataContainer"></div>
-            </div>
-        </div>
+        <div class="left-panel" id="dataContainer"></div>
+        <div class="right-panel" id="forwebDataContainer"></div>
     </div>
 
     <script>
@@ -38,9 +27,6 @@
                 const searchInput = document.getElementById('searchInput');
                 const searchButton = document.getElementById('searchButton');
                 const dropdown = document.getElementById('dropdown');
-                const resultSearchInput = document.getElementById('resultSearchInput');
-                const resultSearchButton = document.getElementById('resultSearchButton');
-                const dropdownResult = document.getElementById('dropdownResult');
                 const initialContainer = document.getElementById('initialContainer');
                 const resultContainer = document.getElementById('resultContainer');
                 const dataContainer = document.getElementById('dataContainer');
@@ -74,11 +60,6 @@
                             img.src = `images/${image}`;
                             div.appendChild(img);
                             dataContainer.appendChild(div);
-
-                            const legendImg = document.createElement('img');
-                            legendImg.src = `web/legend.png`;
-                            legendImg.className = 'legend-image';
-                            dataContainer.appendChild(legendImg);
 
                             const uniprot = image.split('_')[1].split('.')[0];
                             fetchUniprotData(uniprot).then(uniprotData => {
@@ -160,59 +141,56 @@
                     }
                 }
 
-                function handleSearch(searchTerm, inputElement, dropdownElement) {
+                function handleSearch() {
+                    const searchTerm = searchInput.value.toLowerCase();
                     const filteredImages = images.filter(image => {
                         const prefix = image.split('_')[0].toLowerCase();
                         return prefix === searchTerm;
                     });
                     initialContainer.style.display = 'none';
-                    resultContainer.style.display = 'block';
+                    resultContainer.style.display = 'flex';
                     renderImages(filteredImages);
                 }
 
-                function addSearchFunctionality(inputElement, buttonElement, dropdownElement) {
-                    buttonElement.addEventListener('click', () => {
-                        const searchTerm = inputElement.value.toLowerCase();
-                        handleSearch(searchTerm, inputElement, dropdownElement);
-                    });
-                    inputElement.addEventListener('input', () => {
-                        const searchTerm = inputElement.value.toLowerCase();
-                        const matchedItems = images.filter(image => {
-                            const prefix = image.split('_')[0].toLowerCase();
-                            return prefix.startsWith(searchTerm);
-                        }).map(image => image.split('_')[0]);
+                searchButton.addEventListener('click', handleSearch);
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const matchedItems = images.filter(image => {
+                        const prefix = image.split('_')[0].toLowerCase();
+                        return prefix.startsWith(searchTerm);
+                    }).map(image => image.split('_')[0]);
 
-                        dropdownElement.innerHTML = '';
-                        if (matchedItems.length > 0 && searchTerm.length > 0) {
-                            dropdownElement.style.display = 'block';
-                            matchedItems.forEach(item => {
-                                const option = document.createElement('div');
-                                option.className = 'dropdown-item';
-                                option.textContent = item;
-                                option.addEventListener('click', () => {
-                                    inputElement.value = item;
-                                    dropdownElement.innerHTML = '';
-                                    dropdownElement.style.display = 'none';
-                                    handleSearch(item, inputElement, dropdownElement);
-                                });
-                                dropdownElement.appendChild(option);
+                    dropdown.innerHTML = '';
+                    if (matchedItems.length > 0 && searchTerm.length > 0) {
+                        dropdown.style.display = 'block';
+                        matchedItems.forEach(item => {
+                            const option = document.createElement('div');
+                            option.className = 'dropdown-item';
+                            option.textContent = item;
+                            option.addEventListener('click', () => {
+                                searchInput.value = item;
+                                dropdown.innerHTML = '';
+                                dropdown.style.display = 'none';
+                                handleSearch();
                             });
-                        } else {
-                            dropdownElement.style.display = 'none';
-                        }
-                    });
+                            dropdown.appendChild(option);
+                        });
+                    } else {
+                        dropdown.style.display = 'none';
+                    }
+                });
 
-                    inputElement.addEventListener('keypress', event => {
-                        if (event.key === 'Enter') {
-                            dropdownElement.innerHTML = '';
-                            dropdownElement.style.display = 'none';
-                            handleSearch(inputElement.value.toLowerCase(), inputElement, dropdownElement);
-                        }
-                    });
-                }
+                searchInput.addEventListener('keypress', event => {
+                    if (event.key === 'Enter') {
+                        dropdown.innerHTML = '';
+                        dropdown.style.display = 'none';
+                        handleSearch();
+                    }
+                });
 
-                addSearchFunctionality(searchInput, searchButton, dropdown);
-                addSearchFunctionality(resultSearchInput, resultSearchButton, dropdownResult);
+                // 초기에는 데이터가 표시되지 않음
+                dataContainer.innerHTML = '';
+                forwebDataContainer.innerHTML = '';
             })
             .catch(error => console.error('Error loading image list:', error));
     </script>

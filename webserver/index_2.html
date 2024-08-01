@@ -16,17 +16,18 @@
         </div>
     </div>
     <div id="resultContainer" class="container result-container" style="display: none;">
-        <img src="web/logo.png" alt="Experiment Data Search Logo" class="result-logo">
-        <div class="search-container">
-            <input type="text" id="resultSearchInput" placeholder="Enter gene name to search data...">
-            <button id="resultSearchButton">🔍</button>
-            <div id="dropdownResult" class="dropdown-content"></div>
+        <div class="header">
+            <img src="web/logo.png" alt="Experiment Data Search Logo" class="logo">
+            <div class="search-container">
+                <input type="text" id="resultSearchInput" placeholder="Enter gene name to search data...">
+                <button id="resultSearchButton">🔍</button>
+                <div id="resultDropdown" class="dropdown-content"></div>
+            </div>
         </div>
-        <div class="main-panel">
+        <div class="content">
             <div class="left-panel" id="dataContainer"></div>
-            <div class="right-panel">
+            <div class="right-panel" id="forwebDataContainer">
                 <h2>Experimental RNA-binding evidence</h2>
-                <div id="forwebDataContainer"></div>
             </div>
         </div>
     </div>
@@ -40,7 +41,7 @@
                 const dropdown = document.getElementById('dropdown');
                 const resultSearchInput = document.getElementById('resultSearchInput');
                 const resultSearchButton = document.getElementById('resultSearchButton');
-                const dropdownResult = document.getElementById('dropdownResult');
+                const resultDropdown = document.getElementById('resultDropdown');
                 const initialContainer = document.getElementById('initialContainer');
                 const resultContainer = document.getElementById('resultContainer');
                 const dataContainer = document.getElementById('dataContainer');
@@ -60,7 +61,7 @@
 
                 function renderImages(filteredImages) {
                     dataContainer.innerHTML = '';
-                    forwebDataContainer.innerHTML = '';
+                    forwebDataContainer.innerHTML = '<h2>Experimental RNA-binding evidence</h2>';
                     if (filteredImages.length === 0) {
                         const noDataMessage = document.createElement('div');
                         noDataMessage.className = 'no-data';
@@ -74,11 +75,6 @@
                             img.src = `images/${image}`;
                             div.appendChild(img);
                             dataContainer.appendChild(div);
-
-                            const legendImg = document.createElement('img');
-                            legendImg.src = `web/legend.png`;
-                            legendImg.className = 'legend-image';
-                            dataContainer.appendChild(legendImg);
 
                             const uniprot = image.split('_')[1].split('.')[0];
                             fetchUniprotData(uniprot).then(uniprotData => {
@@ -160,59 +156,92 @@
                     }
                 }
 
-                function handleSearch(searchTerm, inputElement, dropdownElement) {
+                function handleSearch(searchTerm) {
                     const filteredImages = images.filter(image => {
                         const prefix = image.split('_')[0].toLowerCase();
-                        return prefix === searchTerm;
+                        return prefix === searchTerm.toLowerCase();
                     });
                     initialContainer.style.display = 'none';
                     resultContainer.style.display = 'block';
                     renderImages(filteredImages);
                 }
 
-                function addSearchFunctionality(inputElement, buttonElement, dropdownElement) {
-                    buttonElement.addEventListener('click', () => {
-                        const searchTerm = inputElement.value.toLowerCase();
-                        handleSearch(searchTerm, inputElement, dropdownElement);
-                    });
-                    inputElement.addEventListener('input', () => {
-                        const searchTerm = inputElement.value.toLowerCase();
-                        const matchedItems = images.filter(image => {
-                            const prefix = image.split('_')[0].toLowerCase();
-                            return prefix.startsWith(searchTerm);
-                        }).map(image => image.split('_')[0]);
+                searchButton.addEventListener('click', () => handleSearch(searchInput.value));
+                resultSearchButton.addEventListener('click', () => handleSearch(resultSearchInput.value));
 
-                        dropdownElement.innerHTML = '';
-                        if (matchedItems.length > 0 && searchTerm.length > 0) {
-                            dropdownElement.style.display = 'block';
-                            matchedItems.forEach(item => {
-                                const option = document.createElement('div');
-                                option.className = 'dropdown-item';
-                                option.textContent = item;
-                                option.addEventListener('click', () => {
-                                    inputElement.value = item;
-                                    dropdownElement.innerHTML = '';
-                                    dropdownElement.style.display = 'none';
-                                    handleSearch(item, inputElement, dropdownElement);
-                                });
-                                dropdownElement.appendChild(option);
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const matchedItems = images.filter(image => {
+                        const prefix = image.split('_')[0].toLowerCase();
+                        return prefix.startsWith(searchTerm);
+                    }).map(image => image.split('_')[0]);
+
+                    dropdown.innerHTML = '';
+                    if (matchedItems.length > 0 && searchTerm.length > 0) {
+                        dropdown.style.display = 'block';
+                        matchedItems.forEach(item => {
+                            const option = document.createElement('div');
+                            option.className = 'dropdown-item';
+                            option.textContent = item;
+                            option.addEventListener('click', () => {
+                                searchInput.value = item;
+                                dropdown.innerHTML = '';
+                                dropdown.style.display = 'none';
+                                handleSearch(item);
                             });
-                        } else {
-                            dropdownElement.style.display = 'none';
-                        }
-                    });
+                            dropdown.appendChild(option);
+                        });
+                    } else {
+                        dropdown.style.display = 'none';
+                    }
+                });
 
-                    inputElement.addEventListener('keypress', event => {
-                        if (event.key === 'Enter') {
-                            dropdownElement.innerHTML = '';
-                            dropdownElement.style.display = 'none';
-                            handleSearch(inputElement.value.toLowerCase(), inputElement, dropdownElement);
-                        }
-                    });
-                }
+                searchInput.addEventListener('keypress', event => {
+                    if (event.key === 'Enter') {
+                        dropdown.innerHTML = '';
+                        dropdown.style.display = 'none';
+                        handleSearch(searchInput.value);
+                    }
+                });
 
-                addSearchFunctionality(searchInput, searchButton, dropdown);
-                addSearchFunctionality(resultSearchInput, resultSearchButton, dropdownResult);
+                resultSearchInput.addEventListener('input', () => {
+                    const searchTerm = resultSearchInput.value.toLowerCase();
+                    const matchedItems = images.filter(image => {
+                        const prefix = image.split('_')[0].toLowerCase();
+                        return prefix.startsWith(searchTerm);
+                    }).map(image => image.split('_')[0]);
+
+                    resultDropdown.innerHTML = '';
+                    if (matchedItems.length > 0 && searchTerm.length > 0) {
+                        resultDropdown.style.display = 'block';
+                        matchedItems.forEach(item => {
+                            const option = document.createElement('div');
+                            option.className = 'dropdown-item';
+                            option.textContent = item;
+                            option.addEventListener('click', () => {
+                                resultSearchInput.value = item;
+                                resultDropdown.innerHTML = '';
+                                resultDropdown.style.display = 'none';
+                                handleSearch(item);
+                            });
+                            resultDropdown.appendChild(option);
+                        });
+                    } else {
+                        resultDropdown.style.display = 'none';
+                    }
+                });
+
+                resultSearchInput.addEventListener('keypress', event => {
+                    if (event.key === 'Enter') {
+                        resultDropdown.innerHTML = '';
+                        resultDropdown.style.display = 'none';
+                        handleSearch(resultSearchInput.value);
+                    }
+                });
+
+                // 초기에는 데이터가 표시되지 않음
+                dataContainer.innerHTML = '';
+                forwebDataContainer.innerHTML = '<h2>Experimental RNA-binding evidence</h2>';
             })
             .catch(error => console.error('Error loading image list:', error));
     </script>

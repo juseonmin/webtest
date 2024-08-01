@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment Data Search</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Experiment Data Search</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Enter gene name to search data...">
+            <button id="searchButton">🔍</button>
+        </div>
+        <div id="dataContainer"></div>
+    </div>
+
+    <script>
+        fetch('imageList.json')
+            .then(response => response.json())
+            .then(images => {
+                const searchInput = document.getElementById('searchInput');
+                const searchButton = document.getElementById('searchButton');
+                const dataContainer = document.getElementById('dataContainer');
+
+                function renderImages(filteredImages) {
+                    dataContainer.innerHTML = '';
+                    if (filteredImages.length === 0) {
+                        const noDataMessage = document.createElement('div');
+                        noDataMessage.className = 'no-data';
+                        noDataMessage.textContent = 'No data';
+                        dataContainer.appendChild(noDataMessage);
+                    } else {
+                        filteredImages.forEach(image => {
+                            const div = document.createElement('div');
+                            div.className = 'image-item';
+                            const img = document.createElement('img');
+                            img.src = `images/${image}`;
+                            div.appendChild(img);
+                            dataContainer.appendChild(div);
+                        });
+                    }
+                }
+
+                function handleSearch() {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const filteredImages = images.filter(image => {
+                        const prefix = image.split('_')[0].toLowerCase();
+                        return prefix === searchTerm;
+                    });
+                    renderImages(filteredImages);
+                }
+
+                searchButton.addEventListener('click', handleSearch);
+                searchInput.addEventListener('keypress', event => {
+                    if (event.key === 'Enter') {
+                        handleSearch();
+                    }
+                });
+
+                // Initial render - no images displayed
+                renderImages([]);
+            })
+            .catch(error => console.error('Error loading image list:', error));
+    </script>
+</body>
+</html>

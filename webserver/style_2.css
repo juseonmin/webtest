@@ -7,7 +7,6 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
-    overflow-y: auto; /* 페이지 전체의 스크롤을 허용 */
 }
 
 .container {
@@ -27,29 +26,24 @@ body {
 .result-container {
     width: 100%;
     max-width: 1600px;
-    display: block;
 }
 
-.main-panel {
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.content {
     display: flex;
-    width: 100%;
-    justify-content: space-between; /* 좌우 패널을 양 끝에 배치 */
 }
 
 .left-panel, .right-panel {
-    width: 48%;
+    width: 50%;
     padding: 20px;
 }
 
 .logo {
     width: 70%;
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-}
-
-.result-logo {
-    width: 35%;
     max-width: 100%;
     height: auto;
     margin-bottom: 20px;
@@ -81,7 +75,7 @@ body {
     cursor: pointer;
 }
 
-#dropdown, #dropdownResult {
+#dropdown, #resultDropdown {
     position: absolute;
     top: 40px;
     left: 0;
@@ -112,12 +106,6 @@ body {
 .image-item img {
     max-width: 100%;
     height: auto;
-}
-
-.legend-image {
-    width: 100%;
-    max-width: 600px; /* dom.png와 같은 크기로 설정 */
-    margin-top: 20px;
 }
 
 .no-data {
